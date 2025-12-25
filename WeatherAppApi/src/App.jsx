@@ -22,8 +22,13 @@ return(
     <div className="container">
         <h1>Aplikacja pogodowa</h1>
 
-        <input type="text" placeholder="Wpisz miasto" value={city} onChange={(e) => setCity(e.target.value)}/>
-        <button onClick={handleSearch}>Szukaj</button>
+        <input type="text" placeholder="Wpisz miasto" value={city} onChange={(e) => setCity(e.target.value)} onKeyDown={(e) => {
+            if (e.key === "Enter"){
+                handleSearch();
+            }
+        }}/>
+        <button onClick={handleSearch} className = "searchButton" 
+        >Szukaj</button>
 
         <div className="result">
             <p>Wpisz miasto i kliknij szukaj</p>

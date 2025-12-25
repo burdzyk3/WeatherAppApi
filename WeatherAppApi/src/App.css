@@ -1,0 +1,23 @@
+.detailsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	gap: 15px;
+	margin-top: 20px;
+}
+
+.infoTile {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(204, 204, 204);
+	font-size: 1rem;
+	border: 2px solid black;
+	border-radius: 8px;
+}
+
+.infoLabel {
+	color: black;
+	font-weight: 700;
+	text-transform: uppercase;
+}
