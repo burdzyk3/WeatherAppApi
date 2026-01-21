@@ -1,5 +1,19 @@
+import { useSelector } from 'react-redux';
+
 function ForecastList({ items }) {
+	const unit = useSelector((state) => state.settings.unit);
+
 	if (!items || items.length === 0) return null;
+
+	const convertTemp = (temp) => {
+		if (unit === 'imperial') {
+			return Math.round((temp * 9 / 5) + 32);
+		}
+		if (unit === 'kelvin') {
+			return Math.round(temp + 273.15);
+		}
+		return Math.round(temp);
+	};
 
 	const dailyForecast = items.reduce((acc, item) => {
 		const date = item.dt_txt.split(" ")[0];
@@ -45,9 +59,9 @@ function ForecastList({ items }) {
 						/>
 
 						<div className="temp-range">
-							<span className="max">{Math.round(day.max)}°</span>
+							<span className="max">{convertTemp(day.max)}°</span>
 							<span className="separator"> / </span>
-							<span className="min">{Math.round(day.min)}°</span>
+							<span className="min">{convertTemp(day.min)}°</span>
 						</div>
 					</div>
 				))}

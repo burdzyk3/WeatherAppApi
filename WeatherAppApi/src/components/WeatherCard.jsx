@@ -1,19 +1,12 @@
+import { useSelector } from 'react-redux';
 import WeatherInfo from "./WeatherInfo";
 
 function WeatherCard({ data }) {
+	const unit = useSelector((state) => state.settings.unit);
+
 	if (!data) {
 		return null;
 	}
-
-	/*
-możliwość podglądu szczegółów prognozy pogody dla podanej miejscowości, a w tym:
-bieżąca temperatura (w stopniach Celsjusza),
-bieżące warunki pogodowe (w formie odpowiedniej ikony),
-prognozowana temperatura i warunki pogodowe na najbliższe 5 dni,
-prawdopodobieństwo wystąpienia opadów (wyrażona w procentach), ich rodzaj oraz ilość (wyrażona w milimetrach na metr kwadratowy),
-prędkość i kierunek wiatru,
-stopień zachmurzenia.
-    */
 
 	function getWindDirection(deg) {
 		const directions = [
@@ -32,6 +25,33 @@ stopień zachmurzenia.
 		return directions[index];
 	}
 
+	const convertTemp = (temp) => {
+		if (unit === 'imperial') {
+			return Math.round((temp * 9 / 5) + 32);
+		}
+		if (unit === 'kelvin') {
+			return Math.round(temp + 273.15);
+		}
+		return Math.round(data.main.temp);
+	};
+
+	const getUnitLabel = () => {
+		if (unit === 'imperial') return 'Fahrenheit';
+		if (unit === 'kelvin') return 'Kelvin';
+		return 'Celsjusza';
+	};
+
+	const getUnitSymbol = () => {
+		if (unit === 'imperial') return '°F';
+		if (unit === 'kelvin') return 'K';
+		return '°C';
+	};
+
+	const unitLabel = getUnitLabel();
+	const unitSymbol = getUnitSymbol();
+
+	const precipitations = data.rain?.["1h"] || data.snow?.["1h"];
+
 	return (
 		<div className="weatherCard">
 			<h2>Miasto {data.name}</h2>
@@ -39,13 +59,13 @@ stopień zachmurzenia.
 			<div className="detailsGrid">
 				<WeatherInfo
 					label="Temperatura: "
-					value={Math.round(data.main.temp)}
-					unit="Celsjusza"
+					value={convertTemp(data.main.temp)}
+					unit={unitLabel}
 				/>
-				<WeatherInfo label="Pogoda: " value={data.weather[0].main} />
+				<WeatherInfo label="Pogoda: " img={data.weather[0].icon} />
 				<WeatherInfo
 					label="Opady: "
-					value={data.rain?.["1h"] || "Brak opadów"}
+					value={precipitations ? `${precipitations} mm` : "Brak opadów"}
 				/>
 				<WeatherInfo
 					label="Wiatr: "

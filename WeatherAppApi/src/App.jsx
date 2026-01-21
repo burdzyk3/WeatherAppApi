@@ -1,56 +1,22 @@
-import { useState } from "react";
 import "./App.css";
-import { getWeather, getForecast } from "./weatherService";
-import WeatherCard from "./components/WeatherCard";
-import ForecastList from "./components/ForecastList";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import SearchView from "./views/SearchView";
+import SavedView from "./views/SavedView";
+import SettingsView from "./views/SettingsView";
 
 function App() {
-	const [city, setCity] = useState("");
-	const [weather, setWeather] = useState(null);
-	const [forecast, setForecast] = useState(null);
 
-	const handleSearch = async () => {
-		try {
-			const weatherData = await getWeather(city);
-			setWeather(weatherData);
-
-			const { lat, lon } = weatherData.coord;
-
-			const forecastData = await getForecast(lat, lon);
-			setForecast(forecastData);
-
-			console.log("Prognoza: ", forecastData);
-		} catch (err) {
-			console.log(err);
-		}
-	};
 
 	return (
-		<div className="container">
-			<h1>Aplikacja pogodowa</h1>
-
-			<input
-				type="text"
-				placeholder="Wpisz miasto"
-				value={city}
-				onChange={(e) => setCity(e.target.value)}
-				onKeyDown={(e) => {
-					if (e.key === "Enter") {
-						handleSearch();
-					}
-				}}
-			/>
-			<button onClick={handleSearch} className="searchButton">
-				Szukaj
-			</button>
-
-			<div className="result">
-				<p>Wpisz miasto i kliknij szukaj</p>
-				<WeatherCard data={weather}></WeatherCard>
-			</div>
-
-			{forecast && <ForecastList items={forecast.list}></ForecastList>}
-		</div>
+		<BrowserRouter>
+			<Navbar />
+			<Routes>
+				<Route path="/" element={<SearchView />} />
+				<Route path="/saved" element={<SavedView />} />
+				<Route path="/settings" element={<SettingsView />} />
+			</Routes>
+		</BrowserRouter>
 	);
 }
 export default App;
